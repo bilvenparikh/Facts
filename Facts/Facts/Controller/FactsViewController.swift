@@ -17,6 +17,7 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.tableFooterView = UIView.init()
         tableView.register(FactTableViewCell.self, forCellReuseIdentifier: "tableViewCell")
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.getFacts), for: .valueChanged)
@@ -30,7 +31,7 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
         super.viewDidLoad()
         view.backgroundColor = .white
         view.addSubview(tableView)
-
+        tableView.refreshControl?.beginRefreshing()
         FactsViewModel.shared.getJsonData()
         
         addConstraints()
