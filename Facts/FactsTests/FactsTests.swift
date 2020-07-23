@@ -78,6 +78,27 @@ class FactsTests: XCTestCase {
         XCTAssertNoThrow(try JSONDecoder().decode(JsonFileData.self, from: modifiedData))
     }
     
+    func testJsonFileDataNotEmpty() throws {
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let jsonData = try Data(contentsOf: url)
+        let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
+        guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
+        var jsonFileData : JsonFileData!
+        jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
+        XCTAssertTrue(jsonFileData != nil)
+    }
+    
+    func testFactsNotEmpty() throws {
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let jsonData = try Data(contentsOf: url)
+        let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
+        guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
+        var jsonFileData : JsonFileData!
+        jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
+        let facts =  try XCTUnwrap(jsonFileData.facts)
+        XCTAssertTrue(facts.count > 0)
+    }
+    
     func testImageherfNotEmpty() throws {
         let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
         let jsonData = try Data(contentsOf: url)
