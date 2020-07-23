@@ -19,7 +19,6 @@ class FactsTests: XCTestCase {
     override func setUp() {
        super.setUp()
         session = URLSession(configuration: .default)
-        FactsViewModel.shared.getJsonData()
     }
     
     override func tearDown() {
@@ -91,7 +90,7 @@ class FactsTests: XCTestCase {
     }
     
     func testHasInternet(){
-        XCTAssertTrue(!NetworkReachability.connectedToNetwork())
+        XCTAssertTrue(NetworkReachability.connectedToNetwork())
     }
     
     
