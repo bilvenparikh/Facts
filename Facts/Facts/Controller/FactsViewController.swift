@@ -18,46 +18,59 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
         tableView.register(FactTableViewCell.self, forCellReuseIdentifier: "tableViewCell")
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(self.getFacts), for: .valueChanged)
+        tableView.refreshControl = refreshControl
         return tableView
     }()
-    let imageCache = NSCache<NSString, UIImage>()
+
+    let imageLoader = ImageLoader()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        FactsViewModel.shared.getJsonData()
         view.backgroundColor = .white
         view.addSubview(tableView)
+
+        FactsViewModel.shared.getJsonData()
+        
         addConstraints()
+        addObservers()
+    }
+    
+    @objc func getFacts(){
+        FactsViewModel.shared.getJsonData()
+    }
+    
+    func addObservers(){
         FactsViewModel.shared.didUpdate = {
             DispatchQueue.main.async {
                 self.title = FactsViewModel.shared.getTitle()
                 self.tableView.reloadData()
+                self.tableView.refreshControl?.endRefreshing()
             }
         }
-        // Do any additional setup after loading the view.
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return FactsViewModel.shared.numberOfFacts
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : FactTableViewCell = tableView.dequeueReusableCell(withIdentifier: "tableViewCell") as! FactTableViewCell
         cell.selectionStyle = .none
         let object = FactsViewModel.shared.getFactAtIndex(indexPath.row)
         cell.lblTitle.text = object.title
         cell.lblDescription.text = object.descriptionField
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let cell = cell as? FactTableViewCell{
-            let object = FactsViewModel.shared.getFactAtIndex(indexPath.row)
-            if let imageHref = object.imageHref{
-                FactsViewModel.shared.loadImageFrom(link: imageHref) { (image) in
-                    cell.imgView.image = image
+        if let imageUrl = object.imageHref{
+            imageLoader.obtainImageWithPath(imagePath: imageUrl) { (image) in
+                if let updateCell = tableView.cellForRow(at: indexPath) as? FactTableViewCell {
+                    updateCell.imgView.image = image
                 }
             }
+        }else{
+            cell.imgView.image = #imageLiteral(resourceName: "placeholder")
         }
+        return cell
     }
     
     func addConstraints() {

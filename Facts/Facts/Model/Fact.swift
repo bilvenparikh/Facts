@@ -37,8 +37,8 @@ struct Fact : Codable {
 
 struct JsonFileData : Codable {
 
-    let facts : [Fact]?
-    let title : String?
+    var facts : [Fact] = []
+    var title : String = ""
 
     enum CodingKeys: String, CodingKey {
         case facts = "rows"
@@ -46,8 +46,8 @@ struct JsonFileData : Codable {
     }
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        facts = try values.decodeIfPresent([Fact].self, forKey: .facts)
-        title = try values.decodeIfPresent(String.self, forKey: .title)
+        facts = try values.decodeIfPresent([Fact].self, forKey: .facts) ?? []
+        title = try values.decodeIfPresent(String.self, forKey: .title) ?? ""
     }
 
 }
