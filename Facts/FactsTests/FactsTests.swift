@@ -18,11 +18,8 @@ class FactsTests: XCTestCase {
     
     override func setUp() {
        super.setUp()
-        factWithoutTitle = Fact.init(withTitle: "", description: "Long Description goes here", imageHref: "http://someimageurl.com/someimage.jpg")
-        factWithoutDescription = Fact.init(withTitle: "Fact Title", description: "", imageHref: "http://someimageurl.com/someimage.jpg")
-        factWithoutImage = Fact.init(withTitle: "Fact Title", description: "Long Description goes here", imageHref: "")
         session = URLSession(configuration: .default)
-        FactsViewModel.shared.getFacts()
+        FactsViewModel.shared.getJsonData()
     }
     
     override func tearDown() {
@@ -52,13 +49,7 @@ class FactsTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-    
-    func testFacts(){
-        XCTAssertEqual(factWithoutTitle.title, "", "Title is missing")
-        XCTAssertEqual(factWithoutImage.imageHref, "", "Image is missing")
-        XCTAssertEqual(factWithoutDescription.descriptionField, "", "Description is missing")
-    }
-    
+        
     // test for valid json file found or not on server
     func testValidFileTobeDownloadedFromURL() {
         let url = URL(string: "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json")
@@ -80,5 +71,29 @@ class FactsTests: XCTestCase {
         wait(for: [promise], timeout: 5)
     }
 
+    func testDecoding() throws {
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let jsonData = try Data(contentsOf: url)
+        let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
+        guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
+        XCTAssertNoThrow(try JSONDecoder().decode(JsonFileData.self, from: modifiedData))
+    }
+    
+    func testImageherfNotEmpty() throws {
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let jsonData = try Data(contentsOf: url)
+        let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
+        guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
+        var jsonFileData : JsonFileData!
+        jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
+        let image =  try XCTUnwrap(jsonFileData.facts.first?.imageHref)
+        XCTAssertFalse(image.isEmpty)
+    }
+    
+    func testHasInternet(){
+        XCTAssertTrue(!NetworkReachability.connectedToNetwork())
+    }
+    
+    
 
 }
