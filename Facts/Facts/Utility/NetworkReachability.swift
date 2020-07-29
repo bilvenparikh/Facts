@@ -11,6 +11,7 @@ import SystemConfiguration
 
 class NetworkReachability: NSObject {
 
+    // MARK:- Checks if device is connected to internet or not
     class func connectedToNetwork() -> Bool {
 
         var zeroAddress = sockaddr_in()

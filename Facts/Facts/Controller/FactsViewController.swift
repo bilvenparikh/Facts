@@ -18,7 +18,7 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = UIView.init()
-        tableView.register(FactTableViewCell.self, forCellReuseIdentifier: "tableViewCell")
+        tableView.register(FactTableViewCell.self, forCellReuseIdentifier: AppConstants.CellIdentifiers.FactsTableViewCell)
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.getFacts), for: .valueChanged)
         tableView.refreshControl = refreshControl
@@ -43,11 +43,11 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
     }
     
     func addObservers(){
-        FactsViewModel.shared.didUpdate = {
+        FactsViewModel.shared.didUpdate = { [weak self] in
             DispatchQueue.main.async {
-                self.title = FactsViewModel.shared.getTitle()
-                self.tableView.reloadData()
-                self.tableView.refreshControl?.endRefreshing()
+                self?.title = FactsViewModel.shared.getTitle()
+                self?.tableView.reloadData()
+                self?.tableView.refreshControl?.endRefreshing()
             }
         }
     }
@@ -57,7 +57,7 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell : FactTableViewCell = tableView.dequeueReusableCell(withIdentifier: "tableViewCell") as! FactTableViewCell
+        let cell : FactTableViewCell = tableView.dequeueReusableCell(withIdentifier: AppConstants.CellIdentifiers.FactsTableViewCell) as! FactTableViewCell
         cell.selectionStyle = .none
         let object = FactsViewModel.shared.getFactAtIndex(indexPath.row)
         cell.lblTitle.text = object.title

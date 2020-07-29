@@ -8,6 +8,7 @@
 
 import UIKit
 
+// MARK:- Fact Object
 struct Fact : Codable {
 
     let descriptionField : String?
@@ -35,6 +36,7 @@ struct Fact : Codable {
 
 }
 
+// MARK:- Main JSONFileData Object
 struct JsonFileData : Codable {
 
     var facts : [Fact] = []

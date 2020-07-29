@@ -17,28 +17,31 @@ class ImageLoader {
     init() {
         session = URLSession.shared
     }
-
+    // MARK:- Downloads image from URL given and returns via completionHandler
     func obtainImageWithPath(imagePath: String, completionHandler: @escaping (UIImage) -> ()) {
         if let image = self.cache.object(forKey: NSString(string:imagePath)) {
             DispatchQueue.main.async {
                 completionHandler(image)
             }
         } else {
-            let placeholder = #imageLiteral(resourceName: "placeholder")
-            DispatchQueue.main.async {
-                completionHandler(placeholder)
-            }
             let url: URL! = URL(string: imagePath)
-            task = session.downloadTask(with: url, completionHandler: { (location, response, error) in
-                if let data = try? Data(contentsOf: url) {
-                    let img: UIImage! = UIImage(data: data)
-                    DispatchQueue.main.async {
-                        self.cache.setObject(img, forKey: NSString(string: imagePath))
-                        completionHandler(img)
-                    }
+            if !NetworkReachability.connectedToNetwork() {
+                let placeholder = #imageLiteral(resourceName: "placeholder")
+                DispatchQueue.main.async {
+                    completionHandler(placeholder)
                 }
-            })
-            task.resume()
+            }else{
+                task = session.downloadTask(with: url, completionHandler: { (location, response, error) in
+                    if let data = try? Data(contentsOf: url) {
+                        let img: UIImage! = UIImage(data: data)
+                        DispatchQueue.main.async {
+                            self.cache.setObject(img, forKey: NSString(string: imagePath))
+                            completionHandler(img)
+                        }
+                    }
+                })
+                task.resume()
+            }
         }
     }
 }

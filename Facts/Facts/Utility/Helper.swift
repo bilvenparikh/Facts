@@ -9,12 +9,13 @@
 import UIKit
 
 class Helper: NSObject {
+    
+    // MARK:- To show alertview on Window with only one option
     class func showAlertViewOnWindow(_ title: String , message: String) {
         
         let alertController = UIAlertController(title: title, message:message, preferredStyle: UIAlertController.Style.alert)
-        let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+        let okAction = UIAlertAction(title: AppConstants.Messages.OK, style: UIAlertAction.Style.default) {
             (result : UIAlertAction) -> Void in
-            
         }
         alertController.addAction(okAction)
         if var topController = UIApplication.shared.windows.first?.rootViewController {

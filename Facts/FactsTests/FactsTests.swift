@@ -10,14 +10,14 @@ import XCTest
 @testable import Facts
 
 class FactsTests: XCTestCase {
-
+    
     var factWithoutTitle : Fact!
     var factWithoutDescription : Fact!
     var factWithoutImage : Fact!
     var session: URLSession!
     
     override func setUp() {
-       super.setUp()
+        super.setUp()
         session = URLSession(configuration: .default)
     }
     
@@ -32,26 +32,26 @@ class FactsTests: XCTestCase {
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
+    
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-
+    
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
         }
     }
-        
+    
     // test for valid json file found or not on server
     func testValidFileTobeDownloadedFromURL() {
-        let url = URL(string: "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json")
+        let url = URL(string: AppConstants.NetworkURLConstants.downloadURL)
         let promise = expectation(description: "Status code: 200")
         
         let dataTask = session.dataTask(with: url!) { data, response, error in
@@ -69,9 +69,9 @@ class FactsTests: XCTestCase {
         dataTask.resume()
         wait(for: [promise], timeout: 5)
     }
-
+    
     func testDecoding() throws {
-        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
         let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
         guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
@@ -79,7 +79,7 @@ class FactsTests: XCTestCase {
     }
     
     func testJsonFileDataNotEmpty() throws {
-        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
         let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
         guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
@@ -89,7 +89,7 @@ class FactsTests: XCTestCase {
     }
     
     func testFactsNotEmpty() throws {
-        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
         let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
         guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
@@ -100,7 +100,7 @@ class FactsTests: XCTestCase {
     }
     
     func testImageherfNotEmpty() throws {
-        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
         let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
         guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
@@ -115,5 +115,5 @@ class FactsTests: XCTestCase {
     }
     
     
-
+    
 }

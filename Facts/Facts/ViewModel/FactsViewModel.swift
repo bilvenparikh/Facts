@@ -9,7 +9,8 @@
 import UIKit
 
 class FactsViewModel: NSObject {
-    
+
+    // MARK:- Shared Instance
     static var obj: FactsViewModel? = nil
     static var shared: FactsViewModel {
         if obj == nil {
@@ -22,22 +23,27 @@ class FactsViewModel: NSObject {
     private var fileData : JsonFileData!
     var didUpdate : (() -> Void)?
     
+    // MARK:- Returns facts array
     func getFacts(){
         arrFacts = fileData.facts.filter({$0.title != nil})
     }
     
+    // MARK:- Returns total number of Facts
     var numberOfFacts : Int{
         return arrFacts.count
     }
     
+    // MARK:- Return Fact object on Index
     func getFactAtIndex(_ index : Int) -> Fact{
         return arrFacts[index]
     }
     
+    // MARK:- Returns Title
     func getTitle() -> String{
         return fileData.title
     }
     
+    // MARK:- Downloads JSON File and stores in Facts Array
     func getJsonData(){
         getDataFromJSON { (data) in
             if let data = data{
@@ -62,9 +68,10 @@ class FactsViewModel: NSObject {
         }
     }
 
+    // MARK:- Downloads JONS File
     private func getDataFromJSON(completion: @escaping (Data?) -> ()){
-        Downloader.load(url: URL.init(string: "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json")!) { success in            
-            let path = NSURL.fileURL(withPath: NSTemporaryDirectory() + "facts.json")
+        Downloader.load(url: URL.init(string: AppConstants.NetworkURLConstants.downloadURL)!) { success in
+            let path = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
             if !FileManager.default.fileExists(atPath: path.absoluteString){
                 do {
                     let data = try Data(contentsOf: URL(string: path.absoluteString)!)
