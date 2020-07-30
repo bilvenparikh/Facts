@@ -9,7 +9,6 @@
 import UIKit
 
 class AppConstants: NSObject {
-    
     // MARK:- Network URL Constants
     struct NetworkURLConstants {
         static let downloadURL = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"

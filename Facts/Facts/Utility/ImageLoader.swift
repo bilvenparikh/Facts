@@ -9,13 +9,11 @@
 import UIKit
 
 class ImageLoader {
-    
-    var task: URLSessionDownloadTask!
-    var session: URLSession!
+    var session: URLSession
     let cache = NSCache<NSString, UIImage>()
-    
+    // MARK:- Init method for ImageLoader
     init() {
-        session = URLSession.shared
+        session = URLSession.shared        
     }
     // MARK:- Downloads image from URL given and returns via completionHandler
     func obtainImageWithPath(imagePath: String, completionHandler: @escaping (UIImage) -> ()) {
@@ -26,17 +24,21 @@ class ImageLoader {
         } else {
             let url: URL! = URL(string: imagePath)
             if !NetworkReachability.connectedToNetwork() {
-                let placeholder = #imageLiteral(resourceName: "placeholder")
                 DispatchQueue.main.async {
-                    completionHandler(placeholder)
+                    completionHandler(#imageLiteral(resourceName: "placeholder"))
                 }
             }else{
+                var task: URLSessionDownloadTask
                 task = session.downloadTask(with: url, completionHandler: { (location, response, error) in
                     if let data = try? Data(contentsOf: url) {
                         let img: UIImage! = UIImage(data: data)
                         DispatchQueue.main.async {
                             self.cache.setObject(img, forKey: NSString(string: imagePath))
                             completionHandler(img)
+                        }
+                    }else{
+                        DispatchQueue.main.async {
+                            completionHandler(#imageLiteral(resourceName: "placeholder"))
                         }
                     }
                 })

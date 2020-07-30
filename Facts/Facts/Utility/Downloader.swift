@@ -8,8 +8,7 @@
 
 import UIKit
 
-class Downloader {
-    
+class Downloader {    
     // MARK:- Downloads file from URL and returns via completion handler
     class func load(url: URL, completion: @escaping (Bool) -> ()) {
         

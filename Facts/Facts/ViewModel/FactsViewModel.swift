@@ -9,7 +9,6 @@
 import UIKit
 
 class FactsViewModel: NSObject {
-
     // MARK:- Shared Instance
     static var obj: FactsViewModel? = nil
     static var shared: FactsViewModel {
@@ -18,14 +17,15 @@ class FactsViewModel: NSObject {
         }
         return obj!
     }
-    
+    // MARK:- Variables
     private var arrFacts = [Fact]()
     private var fileData : JsonFileData!
+    // MARK:- Completion Block
     var didUpdate : (() -> Void)?
     
     // MARK:- Returns facts array
     func getFacts(){
-        arrFacts = fileData.facts.filter({$0.title != nil})
+        arrFacts = fileData.facts.filter({$0.title.count > 0})
     }
     
     // MARK:- Returns total number of Facts
@@ -50,7 +50,7 @@ class FactsViewModel: NSObject {
                 let decoder = JSONDecoder()
                 do{
                     self.fileData = try decoder.decode(JsonFileData.self, from: data)
-                    self.arrFacts = self.fileData.facts.filter({$0.title != nil})
+                    self.arrFacts = self.fileData.facts.filter({$0.title.count > 0})
                     if let didUpdate = self.didUpdate {
                         didUpdate()
                     }

@@ -9,7 +9,6 @@
 import UIKit
 
 class Helper: NSObject {
-    
     // MARK:- To show alertview on Window with only one option
     class func showAlertViewOnWindow(_ title: String , message: String) {
         

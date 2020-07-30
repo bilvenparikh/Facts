@@ -9,6 +9,7 @@
 import UIKit
 
 class FactTableViewCell: UITableViewCell {
+    // MARK:- UI Elements
     let lblTitle : UILabel = {
        let lbl = UILabel()
        lbl.textColor = .black
@@ -26,9 +27,11 @@ class FactTableViewCell: UITableViewCell {
         let imageVw = UIImageView()
         imageVw.contentMode = .scaleAspectFit
         imageVw.clipsToBounds = true
+        imageVw.image = #imageLiteral(resourceName: "placeholder")
         return imageVw
     }()
         
+    // MARK:- Cell Init method
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.addSubview(imgView)
@@ -37,10 +40,16 @@ class FactTableViewCell: UITableViewCell {
         addConstraints()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.imgView.image = #imageLiteral(resourceName: "placeholder")
+    }
+    
+    // MARK:- Required init method
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    // MARK:- Adding Layout Constraints
     func addConstraints() {
         let marginGuide = contentView.layoutMarginsGuide
         
@@ -67,9 +76,4 @@ class FactTableViewCell: UITableViewCell {
         
         contentView.layoutSubviews()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-
 }

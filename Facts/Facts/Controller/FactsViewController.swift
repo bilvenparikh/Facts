@@ -8,11 +8,10 @@
 
 import UIKit
 
-class FactsViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
-    
+class FactsViewController: UIViewController ,UITableViewDataSource {
+    // MARK:- UI elements
     lazy var tableView : UITableView = {
         let tableView = UITableView.init(frame: self.view.bounds, style: .plain)
-        tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.estimatedRowHeight = 100
@@ -25,8 +24,10 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
         return tableView
     }()
 
+    // MARK:- ImageLoader Object
     let imageLoader = ImageLoader()
     
+    // MARK:- View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -38,20 +39,25 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
         addObservers()
     }
     
+    // MARK:- UIRefreshcontrol Method
     @objc func getFacts(){
         FactsViewModel.shared.getJsonData()
     }
     
+    // MARK:- Adding RxObservers for DataModel
     func addObservers(){
         FactsViewModel.shared.didUpdate = { [weak self] in
             DispatchQueue.main.async {
-                self?.title = FactsViewModel.shared.getTitle()
-                self?.tableView.reloadData()
-                self?.tableView.refreshControl?.endRefreshing()
+                if let weakSelf = self{
+                    weakSelf.title = FactsViewModel.shared.getTitle()
+                    weakSelf.tableView.reloadData()
+                    weakSelf.tableView.refreshControl?.endRefreshing()
+                }
             }
         }
     }
     
+    // MARK:- TableView Datasource Methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return FactsViewModel.shared.numberOfFacts
     }
@@ -74,6 +80,7 @@ class FactsViewController: UIViewController, UITableViewDelegate,UITableViewData
         return cell
     }
     
+    // MARK:- Adding Constraints
     func addConstraints() {
         NSLayoutConstraint.activate([
           tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
