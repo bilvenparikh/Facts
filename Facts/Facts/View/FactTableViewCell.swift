@@ -57,8 +57,8 @@ class FactTableViewCell: UITableViewCell {
         imgView.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
         imgView.topAnchor.constraint(greaterThanOrEqualTo: marginGuide.topAnchor).isActive = true
         imgView.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
-        imgView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        imgView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        imgView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        imgView.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         lblTitle.translatesAutoresizingMaskIntoConstraints = false
         lblTitle.leadingAnchor.constraint(equalTo: imgView.trailingAnchor, constant: 10).isActive = true

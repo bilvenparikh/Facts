@@ -33,4 +33,9 @@ class AppConstants: NSObject {
         static let FactsTableViewCell = "tableViewCell"
     }
     
+    struct AccessibilityIdentifiers{
+        static let FactsTableView = "FactsTableView"
+        static let FactsTableViewCell = "tableViewCell"
+    }
+    
 }

@@ -110,10 +110,27 @@ class FactsTests: XCTestCase {
         XCTAssertFalse(image.isEmpty)
     }
     
-    func testHasInternet(){
-        XCTAssertTrue(NetworkReachability.connectedToNetwork())
+    func testTitleNotEmpty() throws {
+        let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
+        let jsonData = try Data(contentsOf: url)
+        let responseStr = String(data: jsonData, encoding: String.Encoding.isoLatin1)
+        guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
+        var jsonFileData : JsonFileData!
+        jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
+        let facts =  try XCTUnwrap(jsonFileData.title)
+        XCTAssertTrue(facts.count > 0)
     }
     
+    func testTableCell() throws{
+        let app = XCUIApplication()
+        let table = app.tables.matching(identifier: AppConstants.AccessibilityIdentifiers.FactsTableView)
+        let cell = table.cells.element(matching: .cell, identifier: AppConstants.AccessibilityIdentifiers.FactsTableViewCell)
+        XCTAssertTrue(cell.exists)
+    }
     
+    func testFactsModelClass() throws{
+        let viewmodel = FactsViewModel.shared
+        XCTAssertNil(viewmodel)
+    }
     
 }

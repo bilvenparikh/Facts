@@ -18,6 +18,7 @@ class FactsViewController: UIViewController ,UITableViewDataSource {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = UIView.init()
         tableView.register(FactTableViewCell.self, forCellReuseIdentifier: AppConstants.CellIdentifiers.FactsTableViewCell)
+        tableView.accessibilityIdentifier = AppConstants.AccessibilityIdentifiers.FactsTableView
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.getFacts), for: .valueChanged)
         tableView.refreshControl = refreshControl
@@ -64,6 +65,7 @@ class FactsViewController: UIViewController ,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : FactTableViewCell = tableView.dequeueReusableCell(withIdentifier: AppConstants.CellIdentifiers.FactsTableViewCell) as! FactTableViewCell
+        cell.accessibilityIdentifier = AppConstants.AccessibilityIdentifiers.FactsTableViewCell
         cell.selectionStyle = .none
         let object = FactsViewModel.shared.getFactAtIndex(indexPath.row)
         cell.lblTitle.text = object.title
