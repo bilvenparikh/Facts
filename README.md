@@ -14,4 +14,5 @@ Followed MVVM Architecture
 
 # App Screenshots :
 
-
+![Screenshot](Screenshots/1.png)
+![Screenshot](Screenshots/2.png)
