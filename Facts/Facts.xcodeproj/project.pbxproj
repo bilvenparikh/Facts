@@ -74,6 +74,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6B3D94B824D3B3A000D2B6D3 /* SupportFiles */ = {
+			isa = PBXGroup;
+			children = (
+				6BB28FD624C24574000373AB /* Assets.xcassets */,
+				6BB28FD324C2456D000373AB /* Facts.xcdatamodeld */,
+				6BB28FD824C24574000373AB /* LaunchScreen.storyboard */,
+			);
+			path = SupportFiles;
+			sourceTree = "<group>";
+		};
 		6BAB74D224C84880006461DE /* Utility */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,10 +123,8 @@
 				6BB28FF224C2482C000373AB /* ViewModel */,
 				6BB28FF124C24827000373AB /* View */,
 				6BB28FF024C24812000373AB /* Controller */,
-				6BB28FD624C24574000373AB /* Assets.xcassets */,
-				6BB28FD824C24574000373AB /* LaunchScreen.storyboard */,
+				6B3D94B824D3B3A000D2B6D3 /* SupportFiles */,
 				6BB28FDB24C24574000373AB /* Info.plist */,
-				6BB28FD324C2456D000373AB /* Facts.xcdatamodeld */,
 			);
 			path = Facts;
 			sourceTree = "<group>";
@@ -442,7 +450,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Facts;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wipro.facts;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -461,7 +469,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Facts;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wipro.facts;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

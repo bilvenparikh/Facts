@@ -5,12 +5,11 @@
 //  Created by 3Embed on 18/07/20.
 //  Copyright © 2020 Bilven. All rights reserved.
 //
-
 import XCTest
+
 @testable import Facts
 
 class FactsTests: XCTestCase {
-    
     var factWithoutTitle : Fact!
     var factWithoutDescription : Fact!
     var factWithoutImage : Fact!
@@ -59,7 +58,7 @@ class FactsTests: XCTestCase {
                 XCTFail("Error: \(error.localizedDescription)")
                 return
             } else if let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                if statusCode == 200 {
+                if statusCode == HTTPStatusCode.ok.rawValue {
                     promise.fulfill()
                 } else {
                     XCTFail("Status code: \(statusCode)")
@@ -69,7 +68,7 @@ class FactsTests: XCTestCase {
         dataTask.resume()
         wait(for: [promise], timeout: 5)
     }
-    
+    // test for decoding JSONFile
     func testDecoding() throws {
         let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
@@ -77,7 +76,7 @@ class FactsTests: XCTestCase {
         guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
         XCTAssertNoThrow(try JSONDecoder().decode(JsonFileData.self, from: modifiedData))
     }
-    
+    // test to check json file has data or not
     func testJsonFileDataNotEmpty() throws {
         let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
@@ -85,9 +84,9 @@ class FactsTests: XCTestCase {
         guard let modifiedData = responseStr?.data(using: String.Encoding.utf8) else { return }
         var jsonFileData : JsonFileData!
         jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
-        XCTAssertTrue(jsonFileData != nil)
+        XCTAssertNil(jsonFileData)
     }
-    
+    // test to check JSON file has array or not
     func testFactsNotEmpty() throws {
         let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
@@ -96,9 +95,9 @@ class FactsTests: XCTestCase {
         var jsonFileData : JsonFileData!
         jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
         let facts =  try XCTUnwrap(jsonFileData.facts)
-        XCTAssertTrue(facts.count > 0)
+        XCTAssertNil(facts)
     }
-    
+    // test to check if images are there or not
     func testImageherfNotEmpty() throws {
         let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
@@ -107,9 +106,9 @@ class FactsTests: XCTestCase {
         var jsonFileData : JsonFileData!
         jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
         let image =  try XCTUnwrap(jsonFileData.facts.first?.imageHref)
-        XCTAssertFalse(image.isEmpty)
+        XCTAssertNil(image)
     }
-    
+    // test to check if title is not empty
     func testTitleNotEmpty() throws {
         let url = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
         let jsonData = try Data(contentsOf: url)
@@ -118,19 +117,33 @@ class FactsTests: XCTestCase {
         var jsonFileData : JsonFileData!
         jsonFileData = try JSONDecoder().decode(JsonFileData.self, from: modifiedData)
         let facts =  try XCTUnwrap(jsonFileData.title)
-        XCTAssertTrue(facts.count > 0)
+        XCTAssertNil(facts)
     }
-    
+    // test to check table has cell with Identifier is exist or not
     func testTableCell() throws{
         let app = XCUIApplication()
         let table = app.tables.matching(identifier: AppConstants.AccessibilityIdentifiers.FactsTableView)
         let cell = table.cells.element(matching: .cell, identifier: AppConstants.AccessibilityIdentifiers.FactsTableViewCell)
         XCTAssertTrue(cell.exists)
     }
-    
+    // test for view model class empty or not
     func testFactsModelClass() throws{
         let viewmodel = FactsViewModel.shared
         XCTAssertNil(viewmodel)
     }
-    
+    // test for initilization succeeds without Title
+    func testMealInitializationSucceedsWithoutTitle() {
+        factWithoutTitle = Fact.init(withTitle: "", description: "Some Long Decription goes here", imageHref: "ImageHREF")
+        XCTAssertNotNil(factWithoutTitle)
+    }
+    // test for initilization succeeds without Description
+    func testMealInitializationSucceedsWithoutDescription() {
+        factWithoutDescription = Fact.init(withTitle: "Some Title", description: "", imageHref: "ImageHREF")
+        XCTAssertNotNil(factWithoutDescription)
+    }
+    // test for initilization succeeds without imageHref
+    func testMealInitializationSucceedsWithoutDescription() {
+        factWithoutImage = Fact.init(withTitle: "Some Title", description: "Some Long Description", imageHref: "")
+        XCTAssertNotNil(factWithoutImage)
+    }
 }

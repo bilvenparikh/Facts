@@ -8,13 +8,12 @@
 
 import UIKit
 
-class Downloader {    
+class Downloader {
     // MARK:- Downloads file from URL and returns via completion handler
     class func load(url: URL, completion: @escaping (Bool) -> ()) {
-        
-        if !NetworkReachability.connectedToNetwork(){
-            completion(false)
+        if !NetworkReachability.connectedToNetwork() {
             Helper.showAlertViewOnWindow(AppConstants.Messages.NoInternetTitle, message: AppConstants.Messages.NoInternetMessage)
+            completion(false)
             return
         }
         let sessionConfig = URLSessionConfiguration.default
@@ -23,7 +22,7 @@ class Downloader {
         let request = URLRequest(url: url)
         let task = session.downloadTask(with: request) { (tempLocalUrl, response, error) in
             if let tempLocalUrl = tempLocalUrl, error == nil {
-                if let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode == 200 {
+                if let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode == HTTPStatusCode.ok.rawValue {
                     do {
                         // MARK:- Checks if file already there it will remove first
                         if !FileManager.default.fileExists(atPath: localUrl.absoluteString) {
@@ -35,7 +34,7 @@ class Downloader {
                         Helper.showAlertViewOnWindow(AppConstants.Messages.ErrorTitle, message: AppConstants.Messages.ErrorWhileLoadingMsg)
                         completion(false)
                     }
-                }else{
+                } else {
                     Helper.showAlertViewOnWindow(AppConstants.Messages.ErrorTitle, message: AppConstants.Messages.ErrorWhileLoadingMsg)
                     completion(false)
                 }
@@ -45,5 +44,4 @@ class Downloader {
         }
         task.resume()
     }
-    
 }

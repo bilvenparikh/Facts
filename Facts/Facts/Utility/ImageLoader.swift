@@ -11,32 +11,34 @@ import UIKit
 class ImageLoader {
     var session: URLSession
     let cache = NSCache<NSString, UIImage>()
+    
     // MARK:- Init method for ImageLoader
     init() {
-        session = URLSession.shared        
+        session = URLSession.shared
     }
+    
     // MARK:- Downloads image from URL given and returns via completionHandler
     func obtainImageWithPath(imagePath: String, completionHandler: @escaping (UIImage) -> ()) {
-        if let image = self.cache.object(forKey: NSString(string:imagePath)) {
+        if let image = self.cache.object(forKey: NSString(string: imagePath)) {
             DispatchQueue.main.async {
                 completionHandler(image)
             }
         } else {
-            let url: URL! = URL(string: imagePath)
+            guard let url: URL = URL(string: imagePath) else { return }
             if !NetworkReachability.connectedToNetwork() {
                 DispatchQueue.main.async {
                     completionHandler(#imageLiteral(resourceName: "placeholder"))
                 }
-            }else{
+            } else {
                 var task: URLSessionDownloadTask
-                task = session.downloadTask(with: url, completionHandler: { (location, response, error) in
-                    if let data = try? Data(contentsOf: url) {
-                        let img: UIImage! = UIImage(data: data)
+                task = session.downloadTask(with: url, completionHandler: { [weak self] (location, response, error) in
+                    guard let weakSelf = self else { return }
+                    if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                         DispatchQueue.main.async {
-                            self.cache.setObject(img, forKey: NSString(string: imagePath))
-                            completionHandler(img)
+                            weakSelf.cache.setObject(image, forKey: NSString(string: imagePath))
+                            completionHandler(image)
                         }
-                    }else{
+                    } else {
                         DispatchQueue.main.async {
                             completionHandler(#imageLiteral(resourceName: "placeholder"))
                         }

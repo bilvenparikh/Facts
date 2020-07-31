@@ -10,69 +10,75 @@ import UIKit
 
 class FactsViewModel: NSObject {
     // MARK:- Shared Instance
-    static var obj: FactsViewModel? = nil
-    static var shared: FactsViewModel {
-        if obj == nil {
-            obj = FactsViewModel()
-        }
-        return obj!
-    }
-    // MARK:- Variables
+    static var shared: FactsViewModel = {
+        let networkManager = FactsViewModel()
+        return networkManager
+    }()
+    // MARK:- Array of Facts
     private var arrFacts = [Fact]()
-    private var fileData : JsonFileData!
+    // MARK:- Main JSON Object
+    private var fileData: JsonFileData?
     // MARK:- Completion Block
-    var didUpdate : (() -> Void)?
-    
+    var didUpdate: (() -> Void)?
+
     // MARK:- Returns facts array
-    func getFacts(){
-        arrFacts = fileData.facts.filter({$0.title.count > 0})
+    func getFacts() {
+        if let fileData = fileData {
+            arrFacts = fileData.facts.filter({ $0.title.count > 0 })
+        }
     }
-    
+
     // MARK:- Returns total number of Facts
-    var numberOfFacts : Int{
+    var numberOfFacts: Int {
         return arrFacts.count
     }
-    
+
     // MARK:- Return Fact object on Index
-    func getFactAtIndex(_ index : Int) -> Fact{
+    func getFactAtIndex(_ index: Int) -> Fact {
         return arrFacts[index]
     }
-    
+
     // MARK:- Returns Title
-    func getTitle() -> String{
-        return fileData.title
+    func getTitle() -> String {
+        if let fileData = fileData {
+            return fileData.title
+        } else {
+            return ""
+        }
     }
-    
+
     // MARK:- Downloads JSON File and stores in Facts Array
-    func getJsonData(){
-        getDataFromJSON { (data) in
-            if let data = data{
+    func getJsonData() {
+        getDataFromJSON { [weak self] (data) in
+            guard let weakself = self else { return }
+            if let data = data {
                 let decoder = JSONDecoder()
-                do{
-                    self.fileData = try decoder.decode(JsonFileData.self, from: data)
-                    self.arrFacts = self.fileData.facts.filter({$0.title.count > 0})
-                    if let didUpdate = self.didUpdate {
+                do {
+                    weakself.fileData = try decoder.decode(JsonFileData.self, from: data)
+                    weakself.getFacts()
+                    if let didUpdate = weakself.didUpdate {
                         didUpdate()
                     }
                 }
-                catch{
-                    if let didUpdate = self.didUpdate {
+                catch {
+                    if let didUpdate = weakself.didUpdate {
                         didUpdate()
                     }
                 }
-            }else{
-                if let didUpdate = self.didUpdate {
+            } else {
+                if let didUpdate = weakself.didUpdate {
                     didUpdate()
                 }
             }
         }
     }
 
-    // MARK:- Downloads JONS File
-    private func getDataFromJSON(completion: @escaping (Data?) -> ()){
-        Downloader.load(url: URL.init(string: AppConstants.NetworkURLConstants.downloadURL)!) { success in
+    // MARK:- Downloads JSON File
+    private func getDataFromJSON(completion: @escaping (Data?) -> ()) {
+        guard let downloadURL = URL.init(string: AppConstants.NetworkURLConstants.downloadURL) else { return }
+        Downloader.load(url: downloadURL) { success in
             let path = NSURL.fileURL(withPath: NSTemporaryDirectory() + AppConstants.FileNames.facts)
-            if !FileManager.default.fileExists(atPath: path.absoluteString){
+            if !FileManager.default.fileExists(atPath: path.absoluteString) {
                 do {
                     let data = try Data(contentsOf: URL(string: path.absoluteString)!)
                     let responseStr = String(data: data, encoding: String.Encoding.isoLatin1)
