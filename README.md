@@ -1,5 +1,5 @@
 # Facts
-Coding Test submission to @ Wipro Digital by Bilven Parikh
+Coding Test submission to @Wipro Digital by Bilven Parikh
 
 # Codign Details :
 1. Build a native iOS app to support both iPHone and iPad devices.
